@@ -356,7 +356,7 @@ body {
 .icon-gold { color: var(--accent-gold); }
 .icon-alert { color: var(--accent-warning); }
 
-/* Dropzone & Preview */
+/* Dropzone & Overlay Canvas */
 .dropzone {
     border: 2px dashed var(--border-bright);
     border-radius: var(--radius-md);
@@ -416,7 +416,7 @@ body {
     flex-wrap: wrap;
 }
 
-/* Image Preview & Scanner Animation */
+/* Image Preview & Bounding Overlay Canvas */
 .preview-wrapper {
     width: 100%;
     height: 100%;
@@ -431,6 +431,16 @@ body {
     max-height: 320px;
     object-fit: contain;
     border-radius: var(--radius-sm);
+}
+
+.overlay-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 8;
 }
 
 .scanner-line {
@@ -476,6 +486,36 @@ body {
 .btn-danger:hover {
     background: #e74c3c;
     transform: scale(1.1);
+}
+
+/* Damage Meter Box */
+.damage-meter-box {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+}
+
+.meter-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+}
+
+.meter-bar-container {
+    width: 100%;
+    height: 8px;
+    background: rgba(231, 76, 60, 0.4);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.meter-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2ecc71, #10b981);
+    transition: width 0.8s ease-in-out;
 }
 
 /* Action Bar & Buttons */
@@ -670,6 +710,224 @@ body {
     text-decoration: underline;
 }
 
+/* Pesticide Safety Badges Box */
+.safety-banner-box {
+    background: rgba(230, 126, 34, 0.1);
+    border: 1px solid rgba(230, 126, 34, 0.3);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.safety-banner-box span {
+    font-size: 0.85rem;
+}
+
+.safety-badges-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.4rem;
+}
+
+.safety-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-full);
+}
+
+.tag-ppe {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+    border: 1px solid rgba(231, 76, 60, 0.4);
+}
+
+.tag-bee {
+    background: rgba(241, 196, 15, 0.2);
+    color: #f1c40f;
+    border: 1px solid rgba(241, 196, 15, 0.4);
+}
+
+.tag-phi {
+    background: rgba(52, 152, 219, 0.2);
+    color: #3498db;
+    border: 1px solid rgba(52, 152, 219, 0.4);
+}
+
+/* 7-Day Care Schedule Timeline */
+.schedule-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.timeline-item {
+    background: rgba(0, 0, 0, 0.3);
+    border-left: 4px solid var(--primary-green);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: 0.85rem 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.timeline-day {
+    background: var(--primary-green);
+    color: var(--text-dark);
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+}
+
+.timeline-content h5 {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    margin-bottom: 0.2rem;
+}
+
+.timeline-content p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Floating Chatbot Assistant */
+.chatbot-wrapper {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 999;
+}
+
+.chat-fab {
+    background: linear-gradient(135deg, var(--primary-green), var(--primary-emerald));
+    color: var(--text-dark);
+    border: none;
+    padding: 0.85rem 1.4rem;
+    border-radius: var(--radius-full);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+    transition: var(--transition);
+}
+
+.chat-fab:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 12px 30px rgba(46, 204, 113, 0.6);
+}
+
+.chat-drawer {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    width: 360px;
+    height: 480px;
+    background: #121a16;
+    border: 1px solid var(--border-bright);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-glass);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-header {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.chat-title h4 {
+    font-size: 0.95rem;
+    font-family: var(--font-heading);
+}
+
+.chat-status {
+    font-size: 0.7rem;
+    color: var(--primary-green);
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.chat-bubble {
+    max-width: 85%;
+    padding: 0.65rem 0.85rem;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.chat-bubble.bot {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-main);
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+}
+
+.chat-bubble.user {
+    background: var(--primary-green);
+    color: var(--text-dark);
+    font-weight: 600;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+
+.chat-input-area {
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chat-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-md);
+    padding: 0.5rem 0.75rem;
+    color: white;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+.chat-input:focus {
+    border-color: var(--primary-green);
+}
+
 /* Empty State & Loader */
 .empty-state, .loading-state {
     text-align: center;
@@ -809,6 +1067,7 @@ body {
     display: flex;
     gap: 0.75rem;
     justify-content: flex-end;
+    flex-wrap: wrap;
 }
 
 /* Condition & Symptoms Box */
@@ -1079,7 +1338,7 @@ body {
     align-items: center;
 }
 
-/* Calculator Results Box */
+/* Calculator & Wizard Results Box */
 .calc-results-box {
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid var(--border-bright);
@@ -1183,7 +1442,7 @@ body {
         color: black !important;
     }
 
-    .navbar, .upload-card, .results-toolbar, .background-globes, .footer, .samples-wrapper, .weather-widget {
+    .navbar, .upload-card, .results-toolbar, .background-globes, .footer, .samples-wrapper, .weather-widget, .chatbot-wrapper {
         display: none !important;
     }
 
@@ -1204,7 +1463,7 @@ body {
         color: black !important;
     }
 
-    .badge-status, .stat-box, .condition-box, .remedy-card, .wiki-box {
+    .badge-status, .stat-box, .condition-box, .remedy-card, .wiki-box, .safety-banner-box {
         background: #f8fafc !important;
         border: 1px solid #cbd5e1 !important;
         color: black !important;

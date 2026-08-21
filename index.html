@@ -45,6 +45,12 @@
                     </select>
                 </div>
 
+                <!-- Soil NPK Wizard Button -->
+                <button id="soilWizardBtn" class="btn btn-outline" title="Soil & NPK Deficiency Wizard">
+                    <i class="fa-solid fa-flask"></i>
+                    <span class="btn-text">Soil Wizard</span>
+                </button>
+
                 <!-- History Log Button -->
                 <button id="historyBtn" class="btn btn-outline" title="View Saved Diagnoses">
                     <i class="fa-solid fa-clock-rotate-left"></i>
@@ -127,13 +133,25 @@
                         </div>
                     </div>
 
-                    <!-- Image Preview & Scan Animation -->
+                    <!-- Image Preview & Scan Canvas Animation -->
                     <div id="previewWrapper" class="preview-wrapper hidden">
                         <img id="imagePreview" src="" alt="Selected Plant Image">
+                        <canvas id="overlayCanvas" class="overlay-canvas"></canvas>
                         <div id="scannerLine" class="scanner-line hidden"></div>
                         <button type="button" id="removeImgBtn" class="btn-circle btn-danger" title="Remove Image">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
+                    </div>
+                </div>
+
+                <!-- Leaf Damage Ratio Meter -->
+                <div id="damageMeterBox" class="damage-meter-box hidden">
+                    <div class="meter-header">
+                        <span><i class="fa-solid fa-chart-pie icon-green"></i> Leaf Tissue Health Index:</span>
+                        <strong id="healthPctText">74% Healthy | 26% Lesions</strong>
+                    </div>
+                    <div class="meter-bar-container">
+                        <div id="healthBarFill" class="meter-bar-fill" style="width: 74%;"></div>
                     </div>
                 </div>
 
@@ -221,6 +239,9 @@
                         <button id="ttsBtn" class="btn btn-sm btn-outline">
                             <i class="fa-solid fa-volume-high"></i> <span id="ttsText">Listen to Diagnosis</span>
                         </button>
+                        <button id="scheduleBtn" class="btn btn-sm btn-outline">
+                            <i class="fa-solid fa-calendar-check"></i> 7-Day Plan
+                        </button>
                         <button id="printBtn" class="btn btn-sm btn-outline">
                             <i class="fa-solid fa-print"></i> Export Report
                         </button>
@@ -290,9 +311,17 @@
                                 </div>
                             </div>
 
-                            <!-- Tab 3: Chemical Remedies -->
+                            <!-- Tab 3: Chemical Remedies (with Safety Badges) -->
                             <div id="tab-chemical" class="tab-panel">
                                 <h3 id="lblTabChemicalTitle">Targeted Agricultural Treatments</h3>
+                                <div class="safety-banner-box">
+                                    <span><i class="fa-solid fa-shield-cat icon-alert"></i> <strong>Pesticide Safety Badges:</strong></span>
+                                    <div class="safety-badges-row">
+                                        <span class="safety-tag tag-ppe"><i class="fa-solid fa-mitten"></i> PPE Gloves Required</span>
+                                        <span class="safety-tag tag-bee"><i class="fa-solid fa-bee"></i> Spray At Dusk (Bee Safe)</span>
+                                        <span class="safety-tag tag-phi"><i class="fa-solid fa-hourglass-half"></i> 7-Day Pre-Harvest Wait</span>
+                                    </div>
+                                </div>
                                 <div id="chemicalList" class="remedy-cards-container">
                                     <!-- Injected via JS -->
                                 </div>
@@ -311,6 +340,42 @@
             </div>
         </section>
     </main>
+
+    <!-- Floating Chatbot Widget (Ask Plant Doctor) -->
+    <div id="chatbotContainer" class="chatbot-wrapper">
+        <button id="toggleChatBtn" class="chat-fab" title="Ask Plant Doctor AI Assistant">
+            <i class="fa-solid fa-comments"></i>
+            <span class="chat-fab-label">Ask Plant Doctor</span>
+        </button>
+
+        <div id="chatDrawer" class="chat-drawer hidden">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <i class="fa-solid fa-robot icon-green"></i>
+                    <div>
+                        <h4>Ask Plant Doctor AI</h4>
+                        <span class="chat-status">Online • Multi-Lingual Agronomist</span>
+                    </div>
+                </div>
+                <button type="button" id="closeChatBtn" class="btn-circle btn-ghost">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div id="chatMessages" class="chat-messages">
+                <div class="chat-bubble bot">
+                    Hello! I'm your AI Agronomist Assistant. Ask me any follow-up question about your crops, organic fertilizers, or spraying weather!
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Ask e.g. 'Can I spray Neem oil today?'..." class="chat-input">
+                <button type="button" id="sendChatBtn" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal 1: API Settings -->
     <div id="apiModal" class="modal-backdrop hidden">
@@ -394,7 +459,76 @@
         </div>
     </div>
 
-    <!-- Modal 3: Scan History Log -->
+    <!-- Modal 3: Soil NPK Diagnostic Wizard -->
+    <div id="soilWizardModal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-flask icon-gold"></i> Soil NPK & Symptom Wizard</h3>
+                <button type="button" class="btn-circle btn-ghost closeModalBtn" data-modal="soilWizardModal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>No photo? Select observed crop leaf symptoms to diagnose soil nutrient deficiencies:</p>
+                
+                <div class="form-group mb-3">
+                    <label for="wizardCrop">Crop Type:</label>
+                    <select id="wizardCrop" class="form-control">
+                        <option value="tomato">Tomato / Solanum</option>
+                        <option value="corn">Maize / Corn</option>
+                        <option value="rice">Rice / Paddy</option>
+                        <option value="apple">Apple Orchard</option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="wizardSymptom">Observed Symptom Pattern:</label>
+                    <select id="wizardSymptom" class="form-control">
+                        <option value="n_def">Uniform yellowing starting from older lower leaves (Nitrogen Deficiency)</option>
+                        <option value="p_def">Dark green leaves turning purple/reddish underneath (Phosphorus Deficiency)</option>
+                        <option value="k_def">Burnt, scorched brown leaf margins and tips (Potassium Deficiency)</option>
+                        <option value="ca_def">Blossom end rot decay on fruit bottoms (Calcium Deficiency)</option>
+                        <option value="fe_def">Yellowing between veins on young upper leaves (Iron Chlorosis)</option>
+                    </select>
+                </div>
+
+                <div id="wizardResultBox" class="calc-results-box">
+                    <h4 id="wizardDefName">Nitrogen Deficiency (N)</h4>
+                    <p id="wizardDefDesc" class="text-muted" style="font-size: 0.85rem;">Apply Urea or Ammonium Sulfate fertilizer (5g/L water) or well-rotted vermicompost.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-block closeModalBtn" data-modal="soilWizardModal">
+                    Close Wizard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: 7-Day Care Schedule Tracker -->
+    <div id="scheduleModal" class="modal-backdrop hidden">
+        <div class="modal-card modal-lg">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-calendar-check icon-green"></i> 7-Day Crop Care & Spray Plan</h3>
+                <button type="button" class="btn-circle btn-ghost closeModalBtn" data-modal="scheduleModal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Follow this interactive 7-day schedule to cure and protect your crop:</p>
+                <div id="scheduleTimeline" class="schedule-timeline">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-block closeModalBtn" data-modal="scheduleModal">
+                    Close Schedule
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 5: Scan History Log -->
     <div id="historyModal" class="modal-backdrop hidden">
         <div class="modal-card modal-lg">
             <div class="modal-header">
