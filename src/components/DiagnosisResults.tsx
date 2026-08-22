@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Volume2, Calendar, Printer, AlertTriangle, Eye, Seedling } from "lucide-react";
+import { Volume2, Calendar, Printer, AlertTriangle, Eye, Sprout } from "lucide-react";
 import type { PlantDiagnosis } from "@/types/diagnosis";
 import type { BotanicalInformation } from "@/types/plant";
 import { WikipediaCard } from "./WikipediaCard";
@@ -26,7 +26,7 @@ export const DiagnosisResults: React.FC<DiagnosisResultsProps> = ({
     return (
       <div className="bg-[#121a16]/80 backdrop-blur-md border border-emerald-500/20 rounded-2xl p-8 shadow-2xl flex flex-col items-center justify-center text-center min-h-[480px]">
         <div className="w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400/50 mb-4">
-          <Seedling className="w-10 h-10" />
+          <Sprout className="w-10 h-10" />
         </div>
         <h3 className="font-heading font-bold text-lg text-slate-100 mb-1">
           No Plant Analyzed Yet

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Stethoscope, Leaf, FlaskConical, ShieldCheck, ShieldAlert, Hourglass, Mitten } from "lucide-react";
+import { Stethoscope, Leaf, FlaskConical, ShieldCheck, ShieldAlert, Hourglass } from "lucide-react";
 import type { Treatment } from "@/types/diagnosis";
 import { TRANSLATIONS } from "@/i18n/translations";
 
@@ -127,7 +127,7 @@ export const RemedyTabs: React.FC<RemedyTabsProps> = ({
               </span>
               <div className="flex flex-wrap gap-1.5">
                 <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 text-[10px] font-bold flex items-center gap-1">
-                  <Mitten className="w-3 h-3" /> PPE Gloves & Mask Required
+                  <ShieldAlert className="w-3 h-3" /> PPE Gloves & Mask Required
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-bold flex items-center gap-1">
                   <ShieldAlert className="w-3 h-3" /> Spray at Dusk (Bee Protection)
